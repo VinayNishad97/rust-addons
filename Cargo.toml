@@ -1,0 +1,40 @@
+[package]
+authors = ["LongYinan <lynweklm@gmail.com>"]
+edition = "2021"
+name = "spect_rust_addons"
+version = "0.1.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi-derive = "3.0.0"
+
+[dependencies.napi]
+version = "3.0.0"
+features = ["napi8"]
+
+# --- FIX: Moved out of the napi block into its own Windows target block ---
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.58", features = [
+  "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_Threading",
+     "Win32_System_ProcessStatus",
+    "Win32_Graphics_Dwm",
+] }
+[target.'cfg(target_os = "linux")'.dependencies]
+sysinfo = "0.37"
+x11rb = { version = "0.13", features = ["shape"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+sysinfo = "0.37"
+core-foundation = "0.9"
+    
+[build-dependencies]
+napi-build = "2"
+
+[profile.release]
+lto = true
+strip = "symbols"
